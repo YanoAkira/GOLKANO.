@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>順位決め</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 1em;
+    }
+    #version-label {
+      position: absolute;
+      top: 0.2em;
+      left: 0.2em;
+      font-size: 0.8em;
+      color: #555;
+}
+
+    h2 {
+      margin-bottom: 0.5em;  /* 「候補者一覧」の下の余白、文字サイズはブラウザ標準 h2 サイズ */
+    }
+    #purpose-area {
+      margin-bottom: 0.5em;    /* 目的入力欄と候補者一覧の間の余白 */
+    }
+    #select-area {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;              /* 各候補者ボタン間の間隔 */
+      margin-bottom: 1.5em;    /* 候補者一覧リストの最下部と順位決めボタンの間隔 */
+      min-height: 3em;       /* iPhoneで高さゼロになる問題の予防策 */
+    }
+    .select-btn {
+      padding: 0.6em 1em;
+      border-radius: 6px;
+      border: 1px solid #888;
+      background-color: white;
+      font-size: 1em;        /* 3〜4文字の候補者名用の文字サイズ */
+      max-width: 8em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .select-btn.small-text {
+      font-size: 0.85em;     /* 5文字以上は縮小表示 */
+    }
+    .select-btn.selected {
+      background-color: limegreen;
+      color: white;
+    }
+    #rank-button {
+      font-size: 1.2em;      /* 「順位決め」の文字サイズ */
+      background-color: red;
+      color: white;
+      padding: 0.6em 1.5em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 0.5em;  /* ボタンと目的の間隔 */
+    }
+    #result-area {
+      text-align: left;
+      margin-left: 1.0em;
+      display: inline-block;  /* 結果一覧の表示位置 */
+    }
+  </style>
+</head>
+<body>
+  <div id="version-label">Ver.0 Rev.0</div>
+  <div id="purpose-area">
+    <label for="purpose-input"><strong>目的：</strong></label>
+    <input id="purpose-input" type="text" maxlength="17" style="width: 17em; font-size: 1.0em;" placeholder="例：コース mm/dd キャンセル調整">
+  </div>
+
+  <h2>候補者一覧</h2>
+
+  <div id="select-area"></div>
+
+  <button id="rank-button" onclick="generateRanking()">順位決め</button>
+
+  <div style="width: 100%;"></div>
+  <div id="result-area" style="margin-top: 0;"></div>
+
+  <script>
+    const CANDIDATES = [
+      "和田佳子", "仙波映之", "松本芳雄", "矢野明　", "米澤智子", "加瀬佳紀",
+      "野並靖　", "坂間恵美", "小泉真吾", "小林康行", "松本大雅", "若林三紗",
+      "村岡敬三", "吹澤英雄", "小泉福子", "池田雄太", "水野円琳", "井上朋美",
+      "宍戸崇裕", "山口克弘", "宮原真里", "予備１　", "予備２　", "予備３　"
+    ];
+
+    function renderCandidates() {
+      const area = document.getElementById("select-area");
+      area.innerHTML = '';
+      CANDIDATES.forEach(name => {
+        const btn = document.createElement("button");
+        btn.textContent = name;
+        btn.className = "select-btn";
+        if (name.length > 4) btn.classList.add("small-text"); // 4文字まで維持、5文字以上縮小
+        btn.onclick = () => btn.classList.toggle("selected");
+        area.appendChild(btn);
+      });
+    }
+
+    function generateRanking() {
+      const selected = Array.from(document.getElementsByClassName("select-btn"))
+        .filter(btn => btn.classList.contains("selected"))
+        .map(btn => btn.textContent);
+
+      const ordered = CANDIDATES.filter(name => selected.includes(name));
+      const shuffled = shuffle([...ordered]);
+
+      const purpose = document.getElementById("purpose-input").value.trim();
+
+      const resultArea = document.getElementById("result-area");
+      resultArea.innerHTML = "";
+
+      if (purpose) {
+        resultArea.innerHTML += `<div style="margin-bottom: 0.5em;"><strong>目的：</strong>${purpose}</div>`;  // 目的を結果の上に表示
+      }
+
+      resultArea.innerHTML += `<h3 style="margin-bottom: 0.2em;">結果一覧</h3>`;  // 「結果一覧」の文字サイズと上部との間隔
+
+      shuffled.forEach((name, index) => {
+        resultArea.innerHTML += `<div>${index + 1}位：${name}</div>`;  // 結果リストの文字サイズとリスト間の間隔（デフォルト）
+      });
+
+      const now = new Date();
+      const formatted = `${now.getFullYear()}年${String(now.getMonth()+1).padStart(2, '0')}月${String(now.getDate()).padStart(2, '0')}日 ` +
+                        `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      resultArea.innerHTML += `<div style="margin-top:0.5em; font-size:1em;">実施：${formatted}</div>`;  // 「実施：」の文字サイズとその前の間隔
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const r = Math.floor(Math.random() * (i + 1));
+        [array[i], array[r]] = [array[r], array[i]];
+      }
+      return array;
+    }
+
+    renderCandidates();
+  </script>
+</body>
+</html>
