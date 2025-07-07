@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/GOLKANO./">
+  <title>WebTest メニュー</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      padding: 2em;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 30px;
+      color: #444;
+    }
+
+    .button-container {
+      margin-top: 10px;
+      margin-left: 20px;
+    }
+
+    .menu-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background-color 0.3s;
+    }
+
+    .menu-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>WebTest メニュー</h1>
+
+  <div class="section">
+    <div class="section-title">業務アプリ</div>
+    <div class="button-container">
+      <button class="menu-button" onclick="location.href='ranking20250706.html'">順位決め</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">業務手順/コースガイド</div>
+    <div class="button-container">
+      <button class="menu-button" onclick="location.href='isogo-guide.html'">磯子</button>
+      <button class="menu-button" onclick="location.href='kawasaki-course-guide.html'">川国</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">その他</div>
+    <div class="button-container">
+      <button class="menu-button" onclick="location.href='sengoku-guide.pdf'">仙石</button>
+    </div>
+  </div>
+
+</body>
+</html>
